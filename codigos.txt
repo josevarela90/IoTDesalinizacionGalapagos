@@ -1,0 +1,528 @@
+HMTL
+
+<html>
+<head>
+
+ <title>Internet de las cosas</title>
+  
+   <!-- 
+  
+  NOTE: This plugin will not be visible on public views of a channel. 
+        If you intend to make your channel public, consider using the
+        MATLAB Visualization App to create your visualizations.
+  
+  -->  
+
+  %%PLUGIN_CSS%%
+  %%PLUGIN_JAVASCRIPT%%
+  
+</head>
+<body style="background-image: url(https://img.freepik.com/vector-gratis/fondo-monocromatico-blanco-estilo-papel_52683-66443.jpg?w=2000)" >
+  <header>
+    <center>
+    <h1 style="color: #000000;font-weight: bold">   
+AGUA GALLARDO   
+</h1>
+      <h2 style="color: #000000;font-weight: bold">
+         Sensores
+      </h2>
+ </center>
+
+        </header> 
+
+<center>
+<iframe width="435" height="230" style="border: 3px solid #258D10;" src="https://thingspeak.com/channels/2357320/charts/1?bgcolor=%23ffffff&color=%230037FF&dynamic=true&results=400&type=line&update=5"></iframe>
+<iframe width="435" height="230" style="border: 3px solid #258D10;" src="https://thingspeak.com/channels/2357320/charts/6?bgcolor=%23ffffff&color=%230037FF&dynamic=true&results=400&type=line&update=5"></iframe>
+<iframe width="435" height="230" style="border: 3px solid #258D10;" src="https://thingspeak.com/channels/2357320/charts/3?bgcolor=%23ffffff&color=%230037FF&dynamic=true&results=400&type=line&update=5"></iframe>
+
+  <h2 style="color: #000000;font-weight: bold">
+         Estado (1)-Pueblo ON (2)-Pueblo OFF (3)-Alterna ON (4)-Bombas Presion OFF (6).-ALTA PRESION ON 
+  </h2>
+  <iframe width="435" height="230" style="border: 3px solid #258D10;" src="https://thingspeak.com/channels/2357320/charts/6?bgcolor=%23ffffff&color=%239B00FF&dynamic=true&results=400&type=line&update=1"></iframe>
+    </center>
+
+  <h2 style="color: #000000;font-weight: bold">
+        Bomba del Pueblo
+  </h2>
+<br>
+<p align="center"> <button style= "font-size : 25px; background-color: #6DDC68;  border-radius: 8px; width:100px; height:50px "   type="button" id="light-on" class="buttonON" >ON</button>
+  <button  style= "font-size : 25px; background-color: #DC6868;  border-radius: 8px;width:100px; height:50px"  type="button" id="light-off" class="buttonOFF" >OFF</button> <label id="estado" style="color: red"></label><br>  </center>  
+<br>
+<br>
+  <h2 style="color: #06DD1D" strong><u>.</u></h2>
+</body>
+
+<script> 
+  //AL DAR CLICK EN EL BOTON ENCENDER EJECUTA LO SIGUIENTE
+ $('#light-on').on('click', () => {
+                    
+                   //LLAMA ALA FUNCION CON EL LINK PUESTO EN 1 PARA PRENDER
+    const Http = new XMLHttpRequest();
+const url='https://api.thingspeak.com/update?api_key=W05DD8OWRB1ELY72&field4=1';
+
+Http.open("GET", url);
+Http.send();
+  //CUANDO YA CARGA EL LINK DEVUELVE EL RESULTADO SEA 0 O UN NUMERO QUE SIGNIFICA QUE ENCENDIO
+Http.onreadystatechange = (e) => {
+  $("#estado").text(Http.responseText)
+}
+  });
+  
+  //LO MISMO QUE EL BOTON ENCENDIDO PERO EL LINK EN 0 PARA APAGAR
+  //
+   $('#light-off').on('click', () => {
+                   
+    
+    const Http = new XMLHttpRequest();
+const url='https://api.thingspeak.com/update?api_key=W05DD8OWRB1ELY72&field4=2';
+Http.open("POST", url);
+Http.send();
+
+Http.onreadystatechange = (e) => {
+   $("#estado").text(Http.responseText)
+}
+  });
+  
+  
+</script>
+  
+
+
+JAVA
+
+<script type='text/javascript' src='https://www.google.com/jsapi'></script>
+<script type='text/javascript'>
+
+  // set your channel id here
+  var channel_id = 9;
+  // set your channel's read api key here if necessary
+  var api_key = '';
+  // maximum value for the gauge
+  var max_gauge_value = 1023;
+  // name of the gauge
+  var gauge_name = 'Light Level';
+
+  // global variables
+  var chart, charts, data;
+
+  // load the google gauge visualization
+  google.load('visualization', '1', {packages:['gauge']});
+  google.setOnLoadCallback(initChart);
+
+  // display the data
+  function displayData(point) {
+    data.setValue(0, 0, gauge_name);
+    data.setValue(0, 1, point);
+    chart.draw(data, options);
+  }
+
+  // load the data
+  function loadData() {
+    // variable for the data point
+    var p;
+
+    // get the data from thingspeak
+    $.getJSON('https://api.thingspeak.com/channels/' + channel_id + '/feed/last.json?api_key=' + api_key, function(data) {
+
+      // get the data point
+      p = data.field1;
+
+      // if there is a data point display it
+      if (p) {
+        p = Math.round((p / max_gauge_value) * 100);
+        displayData(p);
+      }
+
+    });
+  }
+
+  // initialize the chart
+  function initChart() {
+
+    data = new google.visualization.DataTable();
+    data.addColumn('string', 'Label');
+    data.addColumn('number', 'Value');
+    data.addRows(1);
+
+    chart = new google.visualization.Gauge(document.getElementById('gauge_div'));
+    options = {width: 120, height: 120, redFrom: 90, redTo: 100, yellowFrom:75, yellowTo: 90, minorTicks: 5};
+
+    loadData();
+
+    // load new data every 15 seconds
+    setInterval('loadData()', 15000);
+  }
+
+</script>
+
+
+
+SENSADOR DE NIVEL
+
+import os, sys, io
+import M5
+from M5 import *
+from hardware import RGB
+from m5espnow import M5ESPNow
+from unit import UltrasoundI2CUnit
+import time
+from hardware import Pin
+from hardware import I2C
+
+
+
+rgb = None
+espnow_0 = None
+i2c0 = None
+ultrasonic_0 = None
+
+
+ID = None
+Dacum = None
+Dis = None
+Vol = None
+
+
+def setup():
+  global rgb, espnow_0, i2c0, ultrasonic_0, ID, Dis, Dacum, Vol
+
+  M5.begin()
+  rgb = RGB()
+  rgb.set_brightness(0)
+  espnow_0 = M5ESPNow(0)
+  ID = 1
+  espnow_0.set_add_peer('08F9E0D269F4', ID, 0, False)
+  i2c0 = I2C(0, scl=Pin(1), sda=Pin(2), freq=100000)
+  ultrasonic_0 = UltrasoundI2CUnit(i2c0)
+
+
+def loop():
+  global rgb, espnow_0, i2c0, ultrasonic_0, ID, Dis, Dacum, Vol
+  M5.update()
+  Dacum = []
+  for count in range(10):
+    Dacum.append(ultrasonic_0.get_target_distance(2))
+    time.sleep_ms(100)
+  Dacum = sorted(Dacum)
+  Dis = Dacum[4]
+  if Dis < 300:
+    Vol = (2.5*(3.14159*(153-Dis)*75*75))/(1000)
+    espnow_0.send_data(ID, int(Vol))
+  time.sleep(4)
+
+
+if __name__ == '__main__':
+  try:
+    setup()
+    while True:
+      loop()
+  except (Exception, KeyboardInterrupt) as e:
+    try:
+      from utility import print_error_msg
+      print_error_msg(e)
+    except ImportError:
+      print("please update to latest firmware")
+
+
+
+SENSADO de CAUDAL
+
+import os, sys, io
+import M5
+from M5 import *
+from hardware import RGB
+import time
+from m5espnow import M5ESPNow
+from hardware import Pin
+
+
+
+rgb = None
+espnow_0 = None
+pin1 = None
+
+
+F = None
+tStart = None
+state = None
+ID = None
+stateAnt = None
+
+
+def setup():
+  global rgb, espnow_0, pin1, F, tStart, state, ID, stateAnt
+
+  M5.begin()
+  rgb = RGB()
+  rgb.set_brightness(0)
+  espnow_0 = M5ESPNow(0)
+  ID = 3
+  espnow_0.set_add_peer('08F9E0D269F4', ID, 0, False)
+  pin1 = Pin(1, mode=Pin.IN)
+  stateAnt = pin1.value()
+
+
+def loop():
+  global rgb, espnow_0, pin1, F, tStart, state, ID, stateAnt
+  F = 0
+  tStart = time.ticks_ms()
+  while (time.ticks_ms()) - tStart < 2000:
+    state = pin1.value()
+    if state and not stateAnt:
+      F = F + 1
+      stateAnt = 1
+    if stateAnt and not state:
+      stateAnt = 0
+  F = (F / 4.8) / 2
+  espnow_0.send_data(ID, int(F))
+  F
+  time.sleep(7)
+
+
+if __name__ == '__main__':
+  try:
+    setup()
+    while True:
+      loop()
+  except (Exception, KeyboardInterrupt) as e:
+    try:
+      from utility import print_error_msg
+      print_error_msg(e)
+    except ImportError:
+      print("please update to latest firmware")
+
+
+
+
+PANTALLA LOCAL
+
+import os, sys, io
+import M5
+from M5 import *
+from m5espnow import M5ESPNow
+from umqtt import *
+from hardware import *
+from unit import Relay4Unit
+import time
+
+
+
+Nivel = None
+label1 = None
+label2 = None
+image0 = None
+label3 = None
+espnow_0 = None
+mqtt_client = None
+i2c0 = None
+pin13 = None
+pin14 = None
+pin0 = None
+pin34 = None
+pin27 = None
+relay4_0 = None
+autom = 0
+
+espnow_mac = None
+espnow_data = None
+datoRecibido = 0
+Datos = None
+estadoAnterior = None
+datoAntNivel1 = None
+datoAntCaudal = None
+
+# Describe this function...
+def resetDato():
+  global espnow_mac, espnow_data, datoRecibido, Datos, estadoAnterior, Nivel, label1, label2, image0, label3, espnow_0, mqtt_client, i2c0, pin13, pin14, pin0, pin34, pin27, relay4_0
+  if datoRecibido != 0:
+    datoRecibido = 0
+
+
+def espnow_recv_callback(espnow_obj):
+  global autom,datoAntNivel1, datoAntCaudal, Nivel, label1, label2, image0, label3, espnow_0, mqtt_client, i2c0, pin13, pin14, pin0, pin34, pin27, relay4_0, espnow_mac, espnow_data, datoRecibido, Datos, estadoAnterior
+  espnow_mac, espnow_data = espnow_obj.recv_data()
+  val1=entero_a_binario_8bits(espnow_data[1])
+  val2=entero_a_binario_8bits(espnow_data[0])
+  Datos=int(val1+val2,2)
+  if espnow_mac[-1]==0:
+    Nivel.setText(str((str(((str('Caudal:') + str(Datos)))) + str(' Litros/Min.'))))
+    if autom:
+      if Datos > 5 and datoAntCaudal<= 5: #and not (relay4_0.get_relay_state(3))
+        datoRecibido = 1
+        
+      #if Datos >= 0 and Datos <= 5 and datoAntCaudal > 5:
+      if Datos == 0 and datoAntCaudal > 0:
+        datoRecibido = 2
+        
+      datoAntCaudal=Datos
+    try:
+      mqtt_client.publish('channels/2357320/publish/fields/field3', str(Datos), qos=0)
+    except:
+      label3.setText(str('Problemas de Red 1'))
+
+  elif espnow_mac[-1]==84:
+    label1.setText(str((str(((str('Agua Ozono:') + str(Datos)))) + str(' Litros'))))
+    try:
+      mqtt_client.publish('channels/2357320/publish/fields/field2', str(Datos), qos=0)
+    except:
+      label3.setText(str('Problemas de Red 2'))
+  elif espnow_mac[-1]==188:
+    if (Datos-datoAntNivel1)>350 and datoAntNivel1!=0:
+      Datos=datoAntNivel1
+    else:
+      datoAntNivel1=Datos
+
+    label2.setText(str((str(((str('Agua Tanques:') + str(Datos)))) + str(' Litros'))))
+    if Datos > 5000 and (relay4_0.get_relay_state(1)):
+      datoRecibido = 4
+    try:
+      mqtt_client.publish('channels/2357320/publish/fields/field1', str(Datos), qos=0)
+    except:
+      label3.setText(str('Problemas de Red 3'))
+  #else:
+    
+
+
+def mqtt_channels_2357320_subscribe_fields_field4_event(data):
+  global Nivel, label1, label2, image0, label3, espnow_0, mqtt_client, i2c0, pin13, pin14, pin0, pin34, pin27, relay4_0, espnow_mac, espnow_data, datoRecibido, Datos, estadoAnterior
+  try:
+    datoRecibido = int((data[1]).decode())
+  except:
+    label3.setText(str('Problemas de Red 4'))
+
+def entero_a_binario_8bits(numero):
+    # Crear una lista para almacenar los bits
+    bits = []
+
+    # Realizar la conversión a binario manualmente
+    while numero > 0:
+        bits.append(str(numero % 2))  # Agregar el bit correspondiente
+        numero //= 2
+
+    # Asegurarse de que la lista tiene exactamente 8 bits
+    while len(bits) < 8:
+        bits.append('0')  # Agregar ceros para completar 8 bits
+
+    # Invertir la lista y convertirla a una cadena
+    return ''.join(bits[::-1])
+
+def setup():
+  global datoAntNivel1, datoAntCaudal, Nivel, label1, label2, image0, label3, espnow_0, mqtt_client, i2c0, pin13, pin14, pin0, pin34, pin27, relay4_0, espnow_mac, espnow_data, datoRecibido, Datos, estadoAnterior
+
+  M5.begin()
+  Nivel = Widgets.Label("Caudal", 20, 80, 1.0, 0xffffff, 0x000000, Widgets.FONTS.DejaVu18)
+  label1 = Widgets.Label("Agua Ozono", 20, 120, 1.0, 0xffffff, 0x000000, Widgets.FONTS.DejaVu18)
+  label2 = Widgets.Label("Agua Tanques", 20, 160, 1.0, 0xffffff, 0x000000, Widgets.FONTS.DejaVu18)
+  image0 = Widgets.Image("res/img/LOGO1.png", 69, 1, scale_x=1, scale_y=1)
+  label3 = Widgets.Label("Bombas", 20, 200, 1.0, 0x06c67f, 0x000000, Widgets.FONTS.DejaVu18)
+
+  espnow_0 = M5ESPNow(0)
+  espnow_0.set_irq_callback(espnow_recv_callback)
+  i2c0 = I2C(0, scl=Pin(33), sda=Pin(32), freq=100000)
+  relay4_0 = Relay4Unit(i2c0, 0x26)
+  relay4_0.set_relay_state(1, 0)
+  relay4_0.set_relay_state(2, 0)
+  relay4_0.set_relay_state(3, 0)
+  pin13 = Pin(13, mode=Pin.IN, pull=Pin.PULL_UP)
+  pin14 = Pin(14, mode=Pin.IN, pull=Pin.PULL_UP)
+  pin0 = Pin(0, mode=Pin.IN, pull=Pin.PULL_UP)
+  pin34 = Pin(34, mode=Pin.IN, pull=Pin.PULL_UP)
+  pin27 = Pin(27, mode=Pin.IN, pull=Pin.PULL_UP)
+  estadoAnterior = 1
+  datoRecibido = 0
+  datoAntNivel1 = 0
+  datoAntCaudal = 0
+  try:
+    mqtt_client = MQTTClient('NhMUJRYeGwsZHxM5HhoLFAY', 'mqtt3.thingspeak.com', port=1883, user='NhMUJRYeGwsZHxM5HhoLFAY', password='Jb/juWWFZ6eyUnvCLznumORs', keepalive=100)
+    mqtt_client.connect(clean_session=True)
+    mqtt_client.subscribe('channels/2357320/subscribe/fields/field4', mqtt_channels_2357320_subscribe_fields_field4_event, qos=0)
+  except:
+    label3.setText(str('Problemas de Red 0'))
+
+
+
+def loop():
+  global autom,Nivel, label1, label2, image0, label3, espnow_0, mqtt_client, i2c0, pin13, pin14, pin0, pin34, pin27, relay4_0, espnow_mac, espnow_data, datoRecibido, Datos, estadoAnterior
+  M5.update()
+  if relay4_0.get_relay_state(2):
+    if not (pin13.value()):
+      relay4_0.set_relay_state(1, 1)
+      label3.setText(str('Bomba de presion ENCENDIDA'))
+      try:
+        mqtt_client.publish('channels/2357320/publish/fields/field6', '6', qos=0)
+        time.sleep(0.5)
+        mqtt_client.publish('channels/2357320/publish/fields/field6', '6', qos=0)
+      except:
+        label3.setText(str('Problemas de Red 5'))
+  if not (pin0.value()) or datoRecibido == 3:
+    relay4_0.set_relay_state(2, 1)
+    label3.setText(str('Bomba alterna ENCENDIDA'))
+    try:
+      mqtt_client.publish('channels/2357320/publish/fields/field6', '3', qos=0)
+      time.sleep(0.5)
+      mqtt_client.publish('channels/2357320/publish/fields/field6', '3', qos=0)
+    except:
+      label3.setText(str('Problemas de Red 6'))
+    resetDato()
+  if (pin34.value()) or not (pin14.value()) and (relay4_0.get_relay_state(1)) or datoRecibido == 4:
+    relay4_0.set_relay_state(1, 0)
+    time.sleep(1)
+    relay4_0.set_relay_state(2, 0)
+    label3.setText(str('Bomba alterna APAGADA'))
+    try:
+      mqtt_client.publish('channels/2357320/publish/fields/field6', '4', qos=0)
+      time.sleep(0.5)
+      mqtt_client.publish('channels/2357320/publish/fields/field6', '4', qos=0)
+    except:
+      label3.setText(str('Problemas de Red 7'))
+    resetDato()
+  if not (pin27.value()) and estadoAnterior or datoRecibido == 1:
+    relay4_0.set_relay_state(3, 1)
+    label3.setText(str('Bomba pueblo ENCENDIDA'))
+    try:
+      mqtt_client.publish('channels/2357320/publish/fields/field6', '1', qos=0)
+      time.sleep(0.5)
+      mqtt_client.publish('channels/2357320/publish/fields/field6', '1', qos=0)
+    except:
+      label3.setText(str('Problemas de Red 8'))
+    if datoRecibido == 0:
+      estadoAnterior = 0
+      autom=1
+    resetDato()
+  if (pin27.value()) and not estadoAnterior or datoRecibido == 2:
+    relay4_0.set_relay_state(3, 0)
+    label3.setText(str('Bomba pueblo APAGADA'))
+    try:
+      mqtt_client.publish('channels/2357320/publish/fields/field6', '2', qos=0)
+      time.sleep(0.5)
+      mqtt_client.publish('channels/2357320/publish/fields/field6', '2', qos=0)
+    except:
+      label3.setText(str('Problemas de Red 9'))
+
+    if datoRecibido == 0:
+      estadoAnterior = 1
+      autom=0
+    resetDato()
+  try:
+    if (time.ticks_ms()) % 5000 < 200:
+      mqtt_client.check_msg()
+      mqtt_client.reconnect()
+  except:
+    label3.setText(str('Problemas de Red 10'))
+
+  #if not (mqtt_client.isconnected()):
+    #label3.setText(str('Problemas de Red 11'))
+  time.sleep(0.2)
+
+
+if __name__ == '__main__':
+  try:
+    setup()
+    while True:
+      loop()
+  except (Exception, KeyboardInterrupt) as e:
+    try:
+      from utility import print_error_msg
+      print_error_msg(e)
+    except ImportError:
+      print("please update to latest firmware")
