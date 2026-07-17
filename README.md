@@ -13,7 +13,7 @@ Field retrofit of a small reverse-osmosis plant in Santa Cruz Island using an ES
 
 ## Demonstration video
 
-[▶ Watch the automation video](https://youtu.be/REPLACE_WITH_VIDEO_ID)
+[▶ Watch the automation video](https://www.youtube.com/shorts/4TdXMVcsPnM)
 
 > Replace `REPLACE_WITH_VIDEO_ID` with the final public or unlisted video identifier.
 
@@ -24,7 +24,7 @@ Field retrofit of a small reverse-osmosis plant in Santa Cruz Island using an ES
 3. Relay outputs command the existing power contactors for the inlet, low-pressure, and high-pressure pumps.
 4. Wi-Fi and ThingSpeak are used for remote visualization, historical storage, and assisted supervision.
 
-![Control logic](assets/control_logic.png)
+![Control logic](Planta.png)
 
 ## Quick start
 
