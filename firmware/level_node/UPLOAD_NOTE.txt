@@ -1,0 +1,1 @@
+Upload `main.py`, `config.py`, and `../drivers/ultrasonic_i2c.py` to the root of the level-node device.

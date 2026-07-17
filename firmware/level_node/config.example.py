@@ -1,0 +1,11 @@
+# Copy to config.py and edit.
+CONTROLLER_MAC = b"\x00\x00\x00\x00\x00\x00"
+TANK_ID = "raw"  # "raw" or "product"
+I2C_SDA_PIN = 2
+I2C_SCL_PIN = 1
+I2C_ADDRESS = 0x57
+TANK_HEIGHT_M = 1.53
+TANK_RADIUS_M = 0.75
+MOUNTING_OFFSET_M = 0.0
+SAMPLE_INTERVAL_MS = 2000
+AVERAGE_SAMPLES = 5

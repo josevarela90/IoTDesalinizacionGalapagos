@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite the associated article."
+title: "Low-Cost IoT-Based Automation for a Desalination Process in the Galápagos Islands"
+type: software
+authors:
+  - family-names: Varela-Aldás
+    given-names: José
+  - family-names: Gallardo
+    given-names: Cristian
+  - family-names: Bran
+    given-names: Carlos
+  - family-names: Yumbla
+    given-names: Francisco
+  - family-names: Del-Valle-Soto
+    given-names: Carolina
+year: 2026
+repository-code: "https://github.com/USERNAME/galapagos-iot-desalination"
+license: MIT

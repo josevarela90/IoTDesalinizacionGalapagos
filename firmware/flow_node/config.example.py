@@ -1,0 +1,5 @@
+# Copy to config.py and edit.
+CONTROLLER_MAC = b"\x00\x00\x00\x00\x00\x00"
+FLOW_INPUT_PIN = -1
+FLOW_PULSES_PER_LITER = 450.0
+SAMPLE_INTERVAL_MS = 2000
