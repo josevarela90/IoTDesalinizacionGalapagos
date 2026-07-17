@@ -1,6 +1,6 @@
 # Low-Cost IoT Automation for Desalination in the Galápagos
 
-Field retrofit of a small reverse-osmosis plant in Santa Cruz Island using an ESP32-based M5Stack Tough controller, distributed ESP-NOW sensor nodes, relay/contactor actuation, and ThingSpeak supervision.
+Field retrofit of a small reverse-osmosis plant in Santa Cruz Island using a M5Stack Tough controller, distributed ESP-NOW sensor nodes, relay/contactor actuation, and ThingSpeak supervision.
 
 ![Implemented architecture](assets/architecture.png)
 
@@ -32,7 +32,7 @@ cd galapagos-iot-desalination
 python analysis/summarize_sample.py
 ```
 
-For the embedded devices, copy each `config.example.py` file as `config.py`, enter the local pins, MAC addresses, Wi-Fi credentials, and ThingSpeak key, and then upload the corresponding folder to the ESP32 device.
+For the embedded devices, copy each `config.example.py` file as `config.py`, enter the local pins, MAC addresses, Wi-Fi credentials, and ThingSpeak key, and then upload the corresponding folder to the device.
 
 
 ## Important note
