@@ -15,8 +15,6 @@ Field retrofit of a small reverse-osmosis plant in Santa Cruz Island using an ES
 
 [▶ Watch the automation video](https://www.youtube.com/shorts/4TdXMVcsPnM)
 
-> Replace `REPLACE_WITH_VIDEO_ID` with the final public or unlisted video identifier.
-
 ## System overview
 
 1. Flow and level nodes acquire local measurements and send them to the central controller through ESP-NOW.
@@ -36,17 +34,6 @@ python analysis/summarize_sample.py
 
 For the embedded devices, copy each `config.example.py` file as `config.py`, enter the local pins, MAC addresses, Wi-Fi credentials, and ThingSpeak key, and then upload the corresponding folder to the ESP32 device.
 
-## Data-field mapping
-
-The public sample preserves the asynchronous ThingSpeak structure. Based on the operational traces and manuscript description:
-
-| Field | Working interpretation |
-|---|---|
-| `field1` | Main-tank level converted to an estimated stored volume; verify against the original channel configuration |
-| `field3` | Primary monitored flow in L/min |
-| `field6` | Controller event/state code |
-
-State codes used in the sample are `1` inlet pump ON, `2` inlet pump OFF, `3` low-pressure pump ON, `4` RO train OFF, and `6` high-pressure pump ON.
 
 ## Important note
 
